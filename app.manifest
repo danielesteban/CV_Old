@@ -1,11 +1,12 @@
 CACHE MANIFEST
 
-# 5504cdbb41c3c71470a1c9fc82918d09
+# 5f9c5ad329d6126ecab495a09cebdb01
 
 CACHE:
 /
-/1cdc9e5a98f712c84a0ed035b2186b23.css
-/6cec38b235d64fac9493e4a62aed0055.js
+/2d538d0eea7ccbeba9e57d4724f6eca5.css
+/b55e940a0130887e25f5e9802aa8bb14.js
+/img/arrow.png?899f7b6d6b8203998aa9bf58fc6407f3
 /img/cog.png?22483ef63aad04db71373840edf875a5
 /img/cogb.png?849f895882f28e43594e7a536367ec6a
 /img/favicon.ico?1ce7bbc35f2befc185a66749b4dfe3e4
@@ -17,6 +18,7 @@ CACHE:
 
 FALLBACK:
 / /
+/img/arrow.png /img/arrow.png?899f7b6d6b8203998aa9bf58fc6407f3
 /img/cog.png /img/cog.png?22483ef63aad04db71373840edf875a5
 /img/cogb.png /img/cogb.png?849f895882f28e43594e7a536367ec6a
 /img/favicon.ico /img/favicon.ico?1ce7bbc35f2befc185a66749b4dfe3e4
