@@ -1,7 +1,7 @@
 LANG = {
 	en : {
 		all : 'All',
-		checkOutProjects : 'Check out some of the projects i\'ve been working on',
+		checkOutProjects : 'Check out some of the projects I\'ve been working on',
 		contact : 'Contact',
 		email : 'Email',
 		hireMe : 'Hire me',
