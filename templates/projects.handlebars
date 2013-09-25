@@ -1,0 +1,25 @@
+<div class="projects" style="width:{{projectsW}}px">
+	{{#each projects}}
+		<a class="project" href="{{link}}" onclick="LIB.handleLink(event)">
+			<div class="thumb">
+				<img src="/img/projects/thumbs/{{thumb}}.png" rel="{{id}}" style="display:none">
+			</div>
+			<div class="info">
+				<span class="triangle" style="background-image:url({{blueTriangle}})"></span>
+				<h3>{{title}}</h3>
+				<ul class="tags">
+					{{#each tags}}
+						<li>&nbsp;·&nbsp;</li>
+						<li>{{title}}</li>
+					{{/each}}
+				</ul>
+			</div>
+		</a>
+	{{/each}}
+</div>
+<div class="pagination prev">
+	&lt;
+</div>
+<div class="pagination next">
+	&gt;
+</div>

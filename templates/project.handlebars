@@ -1,0 +1,35 @@
+<div class="margin">
+	<div class="media">
+		{{#each media}}
+			{{#if image}}
+				<img src="/img/projects/{{image}}" />
+			{{/if}}
+			{{#if video}}
+				<iframe width="545" height="345" src="//{{video}}" frameborder="0" allowfullscreen></iframe>
+			{{/if}}
+		{{/each}}
+	</div>
+	<div class="info">
+		<ul class="tags">
+			<li>
+				<span class="glyphicon glyphicon-tags"></span>
+			</li>
+			{{#each tags}}
+				<li>
+					{{a title link}}
+				</li>
+			{{/each}}
+		</ul>
+		<h1>{{title}}</h1>
+		<p>{{desc}}</p>
+		<h4>{{L 'myRole'}}</h4>
+		<p>{{role}}</p>
+		{{#if links}}
+			<ul class="links">
+				{{#each links}}
+					<li><a href="{{url}}" target="_blank"><span class="glyphicon glyphicon-link"></span> <b>{{title}}</b></a></li>
+				{{/each}}
+			</ul>
+		{{/if}}
+	</div>
+</div>

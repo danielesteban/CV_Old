@@ -1,0 +1,36 @@
+<canvas class="bg"></canvas>
+<div class="page">
+	{{a 'projects' '/projects' 'cog top projects'}}
+	<div class="container">
+		<header>
+			<h1>
+				<a href="/" onclick="LIB.handleLink(event)" class="home">
+					<span class="icon">
+						<span class="glyphicon glyphicon-home"></span>
+					</span>
+					<span class="name">
+						<strong>DANIEL</strong>ESTEBAN<b></b>NOMBELA
+					</span>
+				</a>
+			</h1>
+			<nav></nav>
+		</header>
+		<section></section>
+	</div>
+	<div class="designer">
+		<div class="name">
+			<p>Design by</p>
+			<h4>Alonsotdh</h4>
+		</div>
+		<a href="/" target="_blank">
+			<span class="icon">
+				<span class="glyphicon glyphicon-chevron-right"></span>
+			</span>
+			<span class="text">Check him out</span>
+		</a>
+	</div>
+	{{a 'hireMe' '/hiring' 'cog bottom hiring'}}
+	<footer>
+		<small>{{a 'contact' '/hiring'}} &nbsp; | &nbsp; {{L 'language'}}: <a class="lang{{#equals lang 'en'}} active{{/equals}}" rel="en">EN</a> <a class="lang{{#equals lang 'es'}} active{{/equals}}" rel="es">ES</a> &nbsp; | &nbsp; {{L 'thisSiteIs'}} <a href="https://github.com/danielesteban/CV" target="_blank">{{L 'freeSoftware'}}</a> &nbsp; | &nbsp; Daniel Esteban Nombela <span class="glyphicon glyphicon-copyright-mark"></span> {{year}}</small>
+	</footer>
+</div>
