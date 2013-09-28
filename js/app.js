@@ -130,6 +130,7 @@ LIB = {
 			});
 		});
 		COGS.onResize();
+		!COGS.ctx && $('a.cog').addClass('nocanvas');
 	},
 	blueTriangle : function() {
 		var canvas = $('<canvas>')[0],
@@ -255,12 +256,24 @@ COGS = {
 			x : 339,
 			y : 60,
 			d : -1
+		},
+		/* Front Section */
+		{
+			s : 'F',
+			x : -106,
+			y : -292
+		},
+		{
+			s : 'F',
+			x : -106,
+			y : 79
 		}
 	],
 	init : function() {
-		var preloaded = function() {
+		var sizes = ['S', 'M', 'L', 'F'],
+			preloaded = function() {
 				var all = true;
-				['S', 'M', 'L'].forEach(function(s) {
+				sizes.forEach(function(s) {
 					!COGS.graphics[s] && (all = false);
 				});
 				all && COGS.draw();
@@ -272,8 +285,8 @@ COGS = {
 			o.d = o.d || 1;
 		});
 		$(window).resize(COGS.onResize);
-		['S', 'M', 'L'].forEach(function(s) {
-			var img = $('<img src="/img/cog' + s + '.png">');
+		sizes.forEach(function(s) {
+			var img = $('<img src="/img/cog' + (s !== 'F' ? s : '') + '.png">');
 			img.load(function() {
 				COGS.graphics[s] = img[0];
 				preloaded();
@@ -311,34 +324,43 @@ COGS = {
 				COGS.timeout = requestAnimationFrame(loop);
 			};
 
+		COGS.objects.forEach(function(o) {
+			if(o.s !== 'F') return;
+			o.d = Math.floor(Math.random() * 2) === 1 ? 1 : -1;
+		});
 		COGS.timeout && cancelAnimationFrame(COGS.timeout);
 		COGS.timeout = requestAnimationFrame(loop);
 	},
 	draw : function() {
-		var ctx = COGS.ctx;
-		COGS.canvas.width = COGS.canvas.width;
-		ctx.save();
-		ctx.translate(COGS.canvas.width / 2, COGS.canvas.height / 2);		
-		COGS.objects.forEach(function(o) {
-			var g = COGS.graphics[o.s];
-			if(!g) return;
-			
-			var hw = (g.width / 2),
-				hh = (g.height / 2);
+		var ctx = COGS.ctx,
+			draw = function(foreground) {
+				ctx.save();
+				ctx.translate(COGS.canvas.width / 2, COGS.canvas.height / 2);		
+				COGS.objects.forEach(function(o) {
+					var g = COGS.graphics[o.s];
+					if(!g || (!foreground && o.s === 'F') || (foreground && o.s !== 'F')) return;
+					
+					var hw = (g.width / 2),
+						hh = (g.height / 2);
 
-			ctx.save();
-			ctx.translate(o.x + hw, o.y + hh);
-			ctx.rotate(o.r * Math.PI / 180);
-			ctx.drawImage(g, -hw, -hh);
-			ctx.restore();
-		});
-		COGS.ctx.restore();
+					ctx.save();
+					ctx.translate(o.x + hw, o.y + hh);
+					ctx.rotate(o.r * Math.PI / 180);
+					ctx.drawImage(g, -hw, -hh);
+					ctx.restore();
+				});
+				COGS.ctx.restore();
+			};
+
+		COGS.canvas.width = COGS.canvas.width;
+		draw();
 		COGS.ctx.drawImage(COGS.getNoise(), 0, 0);
+		draw(true);
 	},
 	move : function() {
 		var speed = 2;
 		COGS.objects.forEach(function(o) {
-			o.r += speed * (o.s === 'S' ? 4 : o.s === 'M' ? 2 : 1) * o.d;
+			o.r += speed * (o.s === 'S' ? 4 : o.s === 'M' || o.s === 'F' ? 2 : 1) * o.d;
 			o.r >= 360 && (o.r = 0);
 		});
 	},

@@ -213,13 +213,15 @@ div.designer {
 a.cog {
 	display: inline-block;
 	width: 205px;
-	background: url(/img/cog.png) no-repeat top center;
 	font-family: "Open Sans Condensed", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	font-size: 24px;
 	line-height: 1.25;
 	color: #fff;
 	text-transform: uppercase;
 	text-decoration: none;
+	&.nocanvas {
+		background: url(/img/cog.png) no-repeat top center;
+	}
 	&.top {
 		padding: 50px 0 8px;
 	}
