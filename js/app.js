@@ -180,11 +180,17 @@ COGS = {
 			x : 400,
 			y : -340
 		},
+		{
+			s : 'S',
+			x : 560,
+			y : -260,
+			d : -1
+		},
 		/* Bottom Section */
 		{
 			s : 'L',
-			x : -870,
-			y : 110
+			x : -871,
+			y : 101
 		},
 		{
 			s : 'M',
@@ -199,8 +205,8 @@ COGS = {
 		},
 		{
 			s : 'L',
-			x : -302,
-			y : 106,
+			x : -301,
+			y : 105,
 			d : -1
 		},
 		{
@@ -222,7 +228,7 @@ COGS = {
 		{
 			s : 'L',
 			x : 334,
-			y : 66,
+			y : 63,
 			d : -1
 		}
 	],
@@ -309,7 +315,6 @@ COGS = {
 				hh = (g.height / 2);
 
 			ctx.save();
-			ctx.globalAlpha = 0.75;
 			ctx.translate(o.x + hw, o.y + hh);
 			ctx.rotate(o.r * Math.PI / 180);
 			ctx.drawImage(g, -hw, -hh);
