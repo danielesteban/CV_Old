@@ -1,6 +1,26 @@
 PROJECTS = [
 	{
 		media : [
+			{ image : 'cayon.jpg' }
+		],
+		thumb : 'cayon',
+		titleEN : 'Cayón Numismática',
+		links : [
+			{
+				url : 'http://cayon.com',
+				titleEN : 'Cayon.com'
+			}
+		],
+		tags : [
+			'PHP',
+			'MySQL',
+			'JS',
+			'HTML5',
+			'Bootstrap'
+		]
+	},
+	{
+		media : [
 			{ image : 'suitz.jpg' },
 			{ image : 'suitz2.jpg' },
 			{ image : 'suitz3.jpg' }
