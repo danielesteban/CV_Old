@@ -166,29 +166,29 @@ COGS = {
 		{
 			s : 'L',
 			x : -840,
-			y : -320,
+			y : -330,
 			d : -1
 		},
 		{
 			s : 'S',
-			x : -564,
-			y : -341
+			x : -560,
+			y : -343
 		},
 		{
 			s : 'M',
-			x : -502,
+			x : -506,
 			y : -299,
 			d : -1
 		},
 		{
 			s : 'M',
-			x : -286,
-			y : -336
+			x : -271,
+			y : -346
 		},
 		{
 			s : 'S',
-			x : -145,
-			y : -379,
+			x : -135,
+			y : -391,
 			d : -1
 		},
 		{
@@ -199,35 +199,35 @@ COGS = {
 		{
 			s : 'M',
 			x : 242,
-			y : -277,
+			y : -282,
 			d : -1
 		},
 		{
 			s : 'S',
-			x : 279,
-			y : -363
+			x : 283,
+			y : -367
 		},
 		{
 			s : 'M',
-			x : 399,
-			y : -342
+			x : 398,
+			y : -347
 		},
 		{
 			s : 'S',
 			x : 560,
-			y : -258,
+			y : -267,
 			d : -1
 		},
 		/* Bottom Section */
 		{
 			s : 'L',
 			x : -871,
-			y : 101
+			y : 98
 		},
 		{
 			s : 'M',
-			x : -550,
-			y : 240,
+			x : -551,
+			y : 241,
 			d : -1
 		},
 		{
@@ -237,30 +237,30 @@ COGS = {
 		},
 		{
 			s : 'L',
-			x : -301,
-			y : 105,
+			x : -305,
+			y : 110,
 			d : -1
 		},
 		{
 			s : 'S',
-			x : 21,
-			y : 206
+			x : 20,
+			y : 217
 		},
 		{
 			s : 'M',
-			x : 94,
-			y : 231,
+			x : 97,
+			y : 215,
 			d : -1
 		},
 		{
 			s : 'S',
-			x : 260,
-			y : 260
+			x : 264,
+			y : 243
 		},
 		{
 			s : 'L',
-			x : 334,
-			y : 63,
+			x : 339,
+			y : 60,
 			d : -1
 		}
 	],
@@ -275,7 +275,7 @@ COGS = {
 			},
 			loop = function(time) {
 				!lastFrame && (lastFrame = time);
-				if(!COGS.ctx || time - lastFrame < 33.33) return requestAnimationFrame(loop);
+				if(!COGS.ctx || time - lastFrame < 33) return requestAnimationFrame(loop);
 				lastFrame = time;
 				COGS.canvas.width = COGS.canvas.width;
 				COGS.ctx.save();
@@ -336,7 +336,7 @@ COGS = {
 		if(!COGS.moving) return;
 		var speed = 2;
 		COGS.objects.forEach(function(o) {
-			o.r += speed * (o.s === 'S' ? 3.6 : o.s === 'M' ? 1.9 : 1) * o.d;
+			o.r += speed * (o.s === 'S' ? 4 : o.s === 'M' ? 2 : 1) * o.d;
 			o.r >= 360 && (o.r = 0);
 		});
 	},
