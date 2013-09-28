@@ -258,34 +258,20 @@ COGS = {
 		}
 	],
 	init : function() {
-		var lastFrame,
-			preloaded = function() {
+		var preloaded = function() {
 				var all = true;
 				['S', 'M', 'L'].forEach(function(s) {
 					!COGS.graphics[s] && (all = false);
 				});
-				all && requestAnimationFrame(loop);
-			},
-			loop = function(time) {
-				!lastFrame && (lastFrame = time);
-				if(!COGS.ctx || time - lastFrame < 33) return requestAnimationFrame(loop);
-				lastFrame = time;
-				COGS.canvas.width = COGS.canvas.width;
-				COGS.ctx.save();
-				COGS.ctx.translate(COGS.canvas.width / 2, COGS.canvas.height / 2);
-				COGS.render();
-				COGS.ctx.restore();
-				COGS.ctx.drawImage(COGS.getBgNoise(), 0, 0);
-				COGS.move();
-				requestAnimationFrame(loop);
+				all && COGS.draw();
 			};
 
 		if(!COGS.ctx) return;
-		COGS.ctx.drawImage(COGS.getBgNoise(), 0, 0);
 		COGS.objects.forEach(function(o) {
 			o.r = 0;
 			o.d = o.d || 1;
 		});
+		$(window).resize(COGS.onResize);
 		['S', 'M', 'L'].forEach(function(s) {
 			var img = $('<img src="/img/cog' + s + '.png">');
 			img.load(function() {
@@ -303,10 +289,61 @@ COGS = {
 		canvas.height = $(window).height();
 		COGS.canvas = canvas;
 		COGS.ctx = ctx;
-		if(COGS.bgNoise && (COGS.bgNoise.width < canvas.width || COGS.bgNoise.height < canvas.height)) delete COGS.bgNoise;
+		if(COGS.noise && (COGS.noise.width < canvas.width || COGS.noise.height < canvas.height)) delete COGS.noise;
+		COGS.draw();
 	},
-	getBgNoise : function() {
-		if(COGS.bgNoise) return COGS.bgNoise;
+	animate : function() {
+		var duration = 400 + Math.floor(Math.random() * 600),
+			time = 0,
+			lastFrame,
+			timeout,
+			loop = function(t) {
+				!lastFrame && (lastFrame = t);
+				if(!COGS.ctx || t - lastFrame < 33) return (COGS.timeout = requestAnimationFrame(loop));
+				time += t - lastFrame;
+				lastFrame = t;
+				if(time >= duration) {
+					delete COGS.timeout;
+					return;
+				}
+				COGS.draw();
+				COGS.move();
+				COGS.timeout = requestAnimationFrame(loop);
+			};
+
+		COGS.timeout && cancelAnimationFrame(COGS.timeout);
+		COGS.timeout = requestAnimationFrame(loop);
+	},
+	draw : function() {
+		var ctx = COGS.ctx;
+		COGS.canvas.width = COGS.canvas.width;
+		ctx.save();
+		ctx.translate(COGS.canvas.width / 2, COGS.canvas.height / 2);		
+		COGS.objects.forEach(function(o) {
+			var g = COGS.graphics[o.s];
+			if(!g) return;
+			
+			var hw = (g.width / 2),
+				hh = (g.height / 2);
+
+			ctx.save();
+			ctx.translate(o.x + hw, o.y + hh);
+			ctx.rotate(o.r * Math.PI / 180);
+			ctx.drawImage(g, -hw, -hh);
+			ctx.restore();
+		});
+		COGS.ctx.restore();
+		COGS.ctx.drawImage(COGS.getNoise(), 0, 0);
+	},
+	move : function() {
+		var speed = 2;
+		COGS.objects.forEach(function(o) {
+			o.r += speed * (o.s === 'S' ? 4 : o.s === 'M' ? 2 : 1) * o.d;
+			o.r >= 360 && (o.r = 0);
+		});
+	},
+	getNoise : function() {
+		if(COGS.noise) return COGS.noise;
 		var canvas = $('<canvas>')[0],
 			ctx = canvas.getContext ? canvas.getContext('2d') : null;
 
@@ -323,37 +360,7 @@ COGS = {
 			data.data[i] = data.data[i + 1] = data.data[i + 2] = c > 255 || c < 0 ? 187 : c;
 		}
 		ctx.putImageData(data, 0, 0);
-		return (COGS.bgNoise = canvas);
-	},
-	move : function() {
-		if(!COGS.moving) return;
-		var speed = 2;
-		COGS.objects.forEach(function(o) {
-			o.r += speed * (o.s === 'S' ? 4 : o.s === 'M' ? 2 : 1) * o.d;
-			o.r >= 360 && (o.r = 0);
-		});
-	},
-	render : function() {
-		var ctx = COGS.ctx;
-		COGS.objects.forEach(function(o) {
-			var g = COGS.graphics[o.s],
-				hw = (g.width / 2),
-				hh = (g.height / 2);
-
-			ctx.save();
-			ctx.translate(o.x + hw, o.y + hh);
-			ctx.rotate(o.r * Math.PI / 180);
-			ctx.drawImage(g, -hw, -hh);
-			ctx.restore();
-		});
-	},
-	animate : function() {
-		COGS.timeout && clearTimeout(COGS.timeout);
-		COGS.timeout = setTimeout(function() {
-			delete COGS.moving;
-			delete COGS.timeout;
-		}, 400 + Math.floor(Math.random() * 600));
-		COGS.moving = true;
+		return (COGS.noise = canvas);
 	}
 };
 
@@ -714,10 +721,7 @@ $(window).load(function() {
 			/* Render the skin */
 			LIB.renderSkin();
 			
-			/* Resize handler */
-			$(window).resize(COGS.onResize);
-			
-			/* Init cogs animation loop */
+			/* Init cogs */
 			COGS.init();
 
 			/* Start the app */
