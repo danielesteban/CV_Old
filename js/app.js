@@ -7,7 +7,7 @@ window.applicationCache && window.applicationCache.addEventListener('updateready
 	window.location.reload();
 }, false);
 
-/* requestAnimationFrame Polyfill */
+/* requestAnimationFrame polyfill */
 (function(window) {
 	var lastTime = 0,
 		vendors = ['webkit', 'moz'],
@@ -15,26 +15,19 @@ window.applicationCache && window.applicationCache.addEventListener('updateready
 		cancelAnimationFrame = window.cancelAnimationFrame,
 		i = vendors.length;
 
-	// try to un-prefix existing raf
-	while (--i >= 0 && !requestAnimationFrame) {
+	while(--i >= 0 && !requestAnimationFrame) {
 		requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
 		cancelAnimationFrame = window[vendors[i] + 'CancelAnimationFrame'];
 	}
-
-	// polyfill with setTimeout fallback
-	// heavily inspired from @darius gist mod: https://gist.github.com/paulirish/1579671#comment-837945
-	if (!requestAnimationFrame || !cancelAnimationFrame) {
+	if(!requestAnimationFrame || !cancelAnimationFrame) {
 		requestAnimationFrame = function(callback) {
 			var now = Date.now(), nextTime = Math.max(lastTime + 16, now);
 			return setTimeout(function() {
 				callback(lastTime = nextTime);
 			}, nextTime - now);
 		};
-
 		cancelAnimationFrame = clearTimeout;
 	}
-
-	// export to window
 	window.requestAnimationFrame = requestAnimationFrame;
 	window.cancelAnimationFrame = cancelAnimationFrame;
 }(window));
@@ -453,81 +446,82 @@ TEMPLATE = {
 		render : function(data) {
 			$('div.thumb img').each(function(i, e) {
 				e = $(e);
+				var fallback = function() {
+						e.show();
+					};
+
+				if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return fallback();
+
 				var cached = TEMPLATE.projects.cachedCanvas[e.attr('rel')];
 				if(cached) {
 					e.attr('class', 'over').show();
 					return e.before(cached);
 				}
-
 				var canvas = $('<canvas>')[0],
 					ctx = canvas.getContext ? canvas.getContext('2d') : null;
 
-				if(ctx) {
-					canvas.width = 240
-					canvas.height = 240;
-					e.before(canvas);
-					e.load(function() {
-						setTimeout(function() {
-							e.css('width', 'auto').css('height', 'auto');
-							ctx.drawImage(e[0], 0, 0, e.width(), e.height(), 0, 0, canvas.width, canvas.height);
-							e.css('width', '').css('height', '');
-							var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-							
-							/* sharpen */
-							var weights = [
-									0, -1, 0,
-									-1, 5, -1,
-									0, -1, 0
-								],
-								side = Math.round(Math.sqrt(weights.length)),
-								halfSide = Math.floor(side / 2),
-								sharpened = ctx.createImageData(canvas.width, canvas.height);
+				if(!ctx) return fallback();
+				canvas.width = 240
+				canvas.height = 240;
+				e.before(canvas);
+				e.load(function() {
+					setTimeout(function() {
+						e.css('width', 'auto').css('height', 'auto');
+						ctx.drawImage(e[0], 0, 0, e.width(), e.height(), 0, 0, canvas.width, canvas.height);
+						e.css('width', '').css('height', '');
+						var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+						
+						/* sharpen */
+						var weights = [
+								0, -1, 0,
+								-1, 5, -1,
+								0, -1, 0
+							],
+							side = Math.round(Math.sqrt(weights.length)),
+							halfSide = Math.floor(side / 2),
+							sharpened = ctx.createImageData(canvas.width, canvas.height);
 
-							for(var y=0; y<canvas.height; y++) {
-								for(var x=0; x<canvas.width; x++) {
-									var dstOff = (y * canvas.width + x) * 4,
-										r = 0,
-										g = 0,
-										b = 0,
-										a = 0;
+						for(var y=0; y<canvas.height; y++) {
+							for(var x=0; x<canvas.width; x++) {
+								var dstOff = (y * canvas.width + x) * 4,
+									r = 0,
+									g = 0,
+									b = 0,
+									a = 0;
 
-								    for(var cy=0; cy<side; cy++) {
-								    	for(var cx=0; cx<side; cx++) {
-											var scy = y + cy - halfSide,
-												scx = x + cx - halfSide;
+							    for(var cy=0; cy<side; cy++) {
+							    	for(var cx=0; cx<side; cx++) {
+										var scy = y + cy - halfSide,
+											scx = x + cx - halfSide;
 
-											if(scy >= 0 && scy < canvas.height && scx >= 0 && scx < canvas.width) {
-												var srcOff = (scy * canvas.width + scx) * 4,
-													wt = weights[cy * side + cx];
+										if(scy >= 0 && scy < canvas.height && scx >= 0 && scx < canvas.width) {
+											var srcOff = (scy * canvas.width + scx) * 4,
+												wt = weights[cy * side + cx];
 
-												r += data.data[srcOff] * wt;
-												g += data.data[srcOff + 1] * wt;
-												b += data.data[srcOff + 2] * wt;
-												a += data.data[srcOff + 3] * wt;
-											}
+											r += data.data[srcOff] * wt;
+											g += data.data[srcOff + 1] * wt;
+											b += data.data[srcOff + 2] * wt;
+											a += data.data[srcOff + 3] * wt;
 										}
 									}
-									sharpened.data[dstOff] = r;
-									sharpened.data[dstOff + 1] = g;
-									sharpened.data[dstOff + 2] = b;
-									sharpened.data[dstOff + 3] = a;
 								}
+								sharpened.data[dstOff] = r;
+								sharpened.data[dstOff + 1] = g;
+								sharpened.data[dstOff + 2] = b;
+								sharpened.data[dstOff + 3] = a;
 							}
-							
-							/* grayscale */
-							for(var i=0; i<sharpened.data.length; i+=4) {
-								var alpha = (0.2126 * sharpened.data[i]) + (0.7152 * sharpened.data[i + 1]) + (0.0722 * sharpened.data[i + 2]);
-								sharpened.data[i] = sharpened.data[i + 1] = sharpened.data[i + 2] = alpha * 0.8;
-							}
-							ctx.putImageData(sharpened, 0, 0);
-							TEMPLATE.projects.cachedCanvas[e.attr('rel')] = canvas;
-						}, 80 * i);
-					});
-				} else {
-					e.show();
-					e.before(e.clone());
-				}
-				e.attr('class', 'over').show();
+						}
+						
+						/* grayscale */
+						for(var i=0; i<sharpened.data.length; i+=4) {
+							var alpha = (0.2126 * sharpened.data[i]) + (0.7152 * sharpened.data[i + 1]) + (0.0722 * sharpened.data[i + 2]);
+							sharpened.data[i] = sharpened.data[i + 1] = sharpened.data[i + 2] = alpha * 0.8;
+						}
+						ctx.putImageData(sharpened, 0, 0);
+						TEMPLATE.projects.cachedCanvas[e.attr('rel')] = canvas;
+					}, 80 * i);
+				});
+				e.attr('class', 'over').show();				
 			});
 
 			var onResize = function() {
