@@ -7,6 +7,38 @@ window.applicationCache && window.applicationCache.addEventListener('updateready
 	window.location.reload();
 }, false);
 
+/* requestAnimationFrame Polyfill */
+(function(window) {
+	var lastTime = 0,
+		vendors = ['webkit', 'moz'],
+		requestAnimationFrame = window.requestAnimationFrame,
+		cancelAnimationFrame = window.cancelAnimationFrame,
+		i = vendors.length;
+
+	// try to un-prefix existing raf
+	while (--i >= 0 && !requestAnimationFrame) {
+		requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
+		cancelAnimationFrame = window[vendors[i] + 'CancelAnimationFrame'];
+	}
+
+	// polyfill with setTimeout fallback
+	// heavily inspired from @darius gist mod: https://gist.github.com/paulirish/1579671#comment-837945
+	if (!requestAnimationFrame || !cancelAnimationFrame) {
+		requestAnimationFrame = function(callback) {
+			var now = Date.now(), nextTime = Math.max(lastTime + 16, now);
+			return setTimeout(function() {
+				callback(lastTime = nextTime);
+			}, nextTime - now);
+		};
+
+		cancelAnimationFrame = clearTimeout;
+	}
+
+	// export to window
+	window.requestAnimationFrame = requestAnimationFrame;
+	window.cancelAnimationFrame = cancelAnimationFrame;
+}(window));
+
 LIB = {
 	cancelHandler : function(e) {
 		e.stopPropagation();
@@ -239,7 +271,7 @@ COGS = {
 				['S', 'M', 'L'].forEach(function(s) {
 					!COGS.graphics[s] && (all = false);
 				});
-				all && window.requestAnimationFrame && requestAnimationFrame(loop);
+				all && requestAnimationFrame(loop);
 			},
 			loop = function(time) {
 				!lastFrame && (lastFrame = time);
@@ -390,15 +422,15 @@ TEMPLATE = {
 		callback : function() {
 			$('section .btn.projects').mouseover(function() {
 				$('section .over.hiring').hide();
-				$('section .arrow.hiring').hide();
+				$('section .arrow.hiring b').hide();
 				$('section .over.projects').fadeIn('fast');
-				$('section .arrow.projects').fadeIn('fast');
+				$('section .arrow.projects b').fadeIn('fast');
 			});
 			$('section .btn.hiring').mouseover(function() {
 				$('section .over.projects').hide();
-				$('section .arrow.projects').hide();
+				$('section .arrow.projects b').hide();
 				$('section .over.hiring').fadeIn('fast');
-				$('section .arrow.hiring').fadeIn('fast');
+				$('section .arrow.hiring b').fadeIn('fast');
 			});
 		}
 	},
