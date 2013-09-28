@@ -261,7 +261,7 @@ section#home {
 		font-weight: 200;
 		line-height: 1.4285714285714286;
 		margin-bottom: 15px;
-		&.mt {
+		&.over {
 			margin-top: 5px;
 		}
 	}
@@ -281,7 +281,7 @@ section#home {
 			}
 		}
 	}
-	a.btn.mr {
+	a.btn.projects {
 		margin-right: 40px;
 	}
 	span.arrow {
@@ -293,6 +293,14 @@ section#home {
 			width: 36px;
 			height: 31px;
 			background: url(/img/arrow.png);
+		}
+		&.hiring b {
+			left: 10px;
+			-moz-transform: scale(-1, 1);
+			-webkit-transform: scale(-1, 1);
+			-o-transform: scale(-1, 1);
+			transform: scale(-1, 1);
+			filter: FlipH;
 		}
 	}
 }

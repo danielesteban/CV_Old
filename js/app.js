@@ -386,6 +386,20 @@ TEMPLATE = {
 			post: {
 				'left' : 0
 			}
+		},
+		callback : function() {
+			$('section .btn.projects').mouseover(function() {
+				$('section .over.hiring').hide();
+				$('section .arrow.hiring').hide();
+				$('section .over.projects').fadeIn('fast');
+				$('section .arrow.projects').fadeIn('fast');
+			});
+			$('section .btn.hiring').mouseover(function() {
+				$('section .over.projects').hide();
+				$('section .arrow.projects').hide();
+				$('section .over.hiring').fadeIn('fast');
+				$('section .arrow.hiring').fadeIn('fast');
+			});
 		}
 	},
 	projects : {

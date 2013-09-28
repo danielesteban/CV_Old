@@ -19,10 +19,14 @@
 	{{/equals}}
 	{{line 33}}
 	<p>
-		<span class="arrow"><b></b></span>
-		{{a 'projects' '/projects' 'btn mr'}}{{a 'hireMe' '/hiring' 'btn'}}
+		<span class="arrow projects"><b></b></span>
+		{{a 'projects' '/projects' 'btn projects'}}{{a 'hireMe' '/hiring' 'btn hiring'}}
+		<span class="arrow hiring" style="display:none"><b></b></span>
 	</p>
-	<p class="mt">
-		{{L 'checkOutProjects'}}
+	<p class="over projects">
+		{{L 'projectsOver'}}
+	</p>
+	<p class="over hiring" style="display:none">
+		{{L 'hiringOver'}}
 	</p>
 </div>
