@@ -19,10 +19,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'PHP',
 			'MySQL',
 			'JS',
@@ -48,10 +44,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'PHP',
 			'MySQL',
 			'JS',
@@ -78,10 +70,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'C++',
 			'Arduino',
 			'Hardware',
@@ -107,10 +95,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'PHP',
 			'MySQL',
 			'JS',
@@ -141,10 +125,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'JS',
 			'HTML5',
 			'CSS3',
@@ -174,10 +154,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'JS',
 			'HTML5',
 			'CSS3',
@@ -198,10 +174,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'JS',
 			'HTML5',
 			'CSS3',
@@ -215,10 +187,6 @@ PROJECTS = [
 		thumb : 'gameengine',
 		titleEN : 'JS game engine',
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'JS',
 			'HTML5',
 			'MelonJS',
@@ -238,10 +206,6 @@ PROJECTS = [
 			}
 		],
 		tags : [
-			{
-				en : 'Recent',
-				es : 'Reciente'
-			},
 			'JS',
 			'HTML5',
 			'CSS3',
