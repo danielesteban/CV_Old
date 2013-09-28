@@ -104,7 +104,7 @@ LIB = {
 				LIB.setLang($(e).attr('rel'));
 			});
 		});
-		LIB.drawBgNoise();
+		COGS.onResize();
 	},
 	blueTriangle : function() {
 		var canvas = $('<canvas>')[0],
@@ -124,14 +124,164 @@ LIB = {
 		var triangle = canvas.toDataURL();
 		LIB.blueTriangle = function() { return triangle; };
 		return triangle;
+	}
+};
+
+COGS = {
+	graphics : [],
+	objects : [
+		/* Upper Section */
+		{
+			s : 'L',
+			x : -840,
+			y : -320,
+			d : -1
+		},
+		{
+			s : 'S',
+			x : -560,
+			y : -340
+		},
+		{
+			s : 'M',
+			x : -500,
+			y : -300,
+			d : -1
+		},
+		{
+			s : 'M',
+			x : -290,
+			y : -320
+		},
+		{
+			s : 'S',
+			x : -150,
+			y : -370,
+			d : -1
+		},
+		{
+			s : 'L',
+			x : -80,
+			y : -400
+		},
+		{
+			s : 'M',
+			x : 240,
+			y : -270,
+			d : -1
+		},
+		{
+			s : 'S',
+			x : 280,
+			y : -360
+		},
+		{
+			s : 'M',
+			x : 400,
+			y : -340
+		},
+		/* Bottom Section */
+		{
+			s : 'L',
+			x : -870,
+			y : 110
+		},
+		{
+			s : 'M',
+			x : -550,
+			y : 240,
+			d : -1
+		},
+		{
+			s : 'S',
+			x : -390,
+			y : 243
+		},
+		{
+			s : 'L',
+			x : -302,
+			y : 106,
+			d : -1
+		},
+		{
+			s : 'S',
+			x : 21,
+			y : 206
+		},
+		{
+			s : 'M',
+			x : 94,
+			y : 231,
+			d : -1
+		},
+		{
+			s : 'S',
+			x : 260,
+			y : 260
+		},
+		{
+			s : 'L',
+			x : 334,
+			y : 66,
+			d : -1
+		}
+	],
+	init : function() {
+		var lastFrame,
+			preloaded = function() {
+				var all = true;
+				['S', 'M', 'L'].forEach(function(s) {
+					!COGS.graphics[s] && (all = false);
+				});
+				all && window.requestAnimationFrame && requestAnimationFrame(loop);
+			},
+			loop = function(time) {
+				!lastFrame && (lastFrame = time);
+				if(!COGS.ctx || time - lastFrame < 33.33) return requestAnimationFrame(loop);
+				lastFrame = time;
+				COGS.canvas.width = COGS.canvas.width;
+				COGS.ctx.save();
+				COGS.ctx.translate(COGS.canvas.width / 2, COGS.canvas.height / 2);
+				COGS.render();
+				COGS.ctx.restore();
+				COGS.ctx.drawImage(COGS.getBgNoise(), 0, 0);
+				COGS.move();
+				requestAnimationFrame(loop);
+			};
+
+		if(!COGS.ctx) return;
+		COGS.ctx.drawImage(COGS.getBgNoise(), 0, 0);
+		COGS.objects.forEach(function(o) {
+			o.r = 0;
+			o.d = o.d || 1;
+		});
+		['S', 'M', 'L'].forEach(function(s) {
+			var img = $('<img src="/img/cog' + s + '.png">');
+			img.load(function() {
+				COGS.graphics[s] = img[0];
+				preloaded();
+			});
+		});
 	},
-	drawBgNoise : function() {
+	onResize : function() {
 		var canvas = $('canvas.bg')[0],
 			ctx = canvas.getContext ? canvas.getContext('2d') : null;
 
 		if(!ctx) return;
 		canvas.width = $(window).width();
 		canvas.height = $(window).height();
+		COGS.canvas = canvas;
+		COGS.ctx = ctx;
+		if(COGS.bgNoise && (COGS.bgNoise.width < canvas.width || COGS.bgNoise.height < canvas.height)) delete COGS.bgNoise;
+	},
+	getBgNoise : function() {
+		if(COGS.bgNoise) return COGS.bgNoise;
+		var canvas = $('<canvas>')[0],
+			ctx = canvas.getContext ? canvas.getContext('2d') : null;
+
+		if(!ctx) return;
+		canvas.width = COGS.canvas.width;
+		canvas.height = COGS.canvas.height;
 		ctx.rect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = 'rgba(187, 187, 187, 0.15)';
 		ctx.fill();
@@ -142,6 +292,37 @@ LIB = {
 			data.data[i] = data.data[i + 1] = data.data[i + 2] = c > 255 || c < 0 ? 187 : c;
 		}
 		ctx.putImageData(data, 0, 0);
+		return (COGS.bgNoise = canvas);
+	},
+	move : function() {
+		if(!COGS.moving) return;
+		COGS.objects.forEach(function(o) {
+			o.r += (o.s === 'S' ? 10 : o.s === 'M' ? 5 : 1) * o.d;
+			o.r >= 360 && (o.r = 0);
+		});
+	},
+	render : function() {
+		var ctx = COGS.ctx;
+		COGS.objects.forEach(function(o) {
+			var g = COGS.graphics[o.s],
+				hw = (g.width / 2),
+				hh = (g.height / 2);
+
+			ctx.save();
+			ctx.globalAlpha = 0.75;
+			ctx.translate(o.x + hw, o.y + hh);
+			ctx.rotate(o.r * Math.PI / 180);
+			ctx.drawImage(g, -hw, -hh);
+			ctx.restore();
+		});
+	},
+	animate : function() {
+		COGS.timeout && clearTimeout(COGS.timeout);
+		COGS.timeout = setTimeout(function() {
+			delete COGS.moving;
+			delete COGS.timeout;
+		}, 400 + Math.floor(Math.random() * 600));
+		COGS.moving = true;
 	}
 };
 
@@ -177,7 +358,7 @@ ROUTER = {
 		
 		data.lang = L.lang;
 		var section = $('<section id="' + panel + '" style="' + animation.pre + '">' + Handlebars.templates[panel](data) + '</section>');
-		$('section').after(section);
+		$('section').fadeOut().after(section);
 		TEMPLATE[panel] && TEMPLATE[panel].render && TEMPLATE[panel].render(data);
 		section.animate(animation.post, 'fast', function() {
 			while($('section').length > 1) $('section').first().remove();
@@ -188,6 +369,7 @@ ROUTER = {
 		$('a.cog.' + panel + ', header a.' + panel).addClass('active');
 		$('header nav li').removeClass('active');
 		['project', 'projects'].indexOf(panel) === -1 && $('header nav:visible').fadeOut('fast');
+		COGS.animate();
 		!fromPopEvent && window.history.state !== '/' + url && window.history.pushState('/' + url, '', '/' + url); 
 	}
 };
@@ -283,7 +465,7 @@ TEMPLATE = {
 							/* grayscale */
 							for(var i=0; i<sharpened.data.length; i+=4) {
 								var alpha = (0.2126 * sharpened.data[i]) + (0.7152 * sharpened.data[i + 1]) + (0.0722 * sharpened.data[i + 2]);
-								sharpened.data[i] = sharpened.data[i + 1] = sharpened.data[i + 2] = alpha;
+								sharpened.data[i] = sharpened.data[i + 1] = sharpened.data[i + 2] = alpha * 0.8;
 							}
 							ctx.putImageData(sharpened, 0, 0);
 							TEMPLATE.projects.cachedCanvas[e.attr('rel')] = canvas;
@@ -318,6 +500,7 @@ TEMPLATE = {
 						projects.animate({
 							left : l - (241 * direction)
 						});
+						COGS.animate();
 						switch(direction) {
 							case -1:
 								$('div.pagination.next:hidden').fadeIn('fast');
@@ -492,8 +675,11 @@ $(window).load(function() {
 			LIB.renderSkin();
 			
 			/* Resize handler */
-			$(window).resize(LIB.drawBgNoise);
+			$(window).resize(COGS.onResize);
 			
+			/* Init cogs animation loop */
+			COGS.init();
+
 			/* Start the app */
 			ROUTER.init();
 		};
