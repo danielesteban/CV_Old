@@ -446,21 +446,15 @@ TEMPLATE = {
 		render : function(data) {
 			$('div.thumb img').each(function(i, e) {
 				e = $(e);
-				var fallback = function() {
-						e.show();
-					};
-
-				if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return fallback();
+				if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return e.show();
 
 				var cached = TEMPLATE.projects.cachedCanvas[e.attr('rel')];
-				if(cached) {
-					e.attr('class', 'over').show();
-					return e.before(cached);
-				}
+				if(cached) return e.attr('class', 'over').show().before(cached);
+
 				var canvas = $('<canvas>')[0],
 					ctx = canvas.getContext ? canvas.getContext('2d') : null;
 
-				if(!ctx) return fallback();
+				if(!ctx) return e.show();
 				canvas.width = 240
 				canvas.height = 240;
 				e.before(canvas);
