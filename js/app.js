@@ -298,7 +298,7 @@ COGS = {
 			ctx = canvas.getContext ? canvas.getContext('2d') : null;
 
 		if(!ctx) return;
-		canvas.width = $(window).width();
+		canvas.width = Math.max($(window).width(), 940);
 		canvas.height = $(window).height();
 		COGS.canvas = canvas;
 		COGS.ctx = ctx;
