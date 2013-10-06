@@ -66,7 +66,7 @@ PROJECTS = [
 		thumb : 'remoteChalkboard',
 		titleEN : 'RemoteChalkboard',
 		descEN : 'A multi-user doodling platform. Enables kids to do collective art pieces. Each with their individual layer. It runs on any desktop/mobile browser that supports canvas. Hosted on openshift.',
-		descES : 'Una plataforma de dibujo multi-usuario. Permite a los niños crear piezas de arte colectivo. Casa uno con su capa individual. Funciona en cualquier navegador desktop/mobile que soporte canvas. Alojado en openshift.',
+		descES : 'Una plataforma de dibujo multi-usuario. Permite a los niños crear piezas de arte colectivo. Cada uno con su capa individual. Funciona en cualquier navegador desktop/mobile que soporte canvas. Alojado en openshift.',
 		roleEN : 'I coded this opensource experiment to learn more about canvas, brushes and touchevents. Also took the opportunity to test deploying it on redhat\'s cloud.',
 		roleES : 'Programé este experimento opensource para aprender más sobre canvas, pinceles y touchevents. También aproveche la oportunidad para probar el deploy en la nube de redhat.',
 		links : [
