@@ -288,6 +288,10 @@ COGS = {
 		sizes.forEach(function(s) {
 			var img = $('<img src="/img/cog' + (s !== 'F' ? s : '') + '.png">');
 			img.load(function() {
+				if(document.all) {
+					img.css('display', 'absolute').css('top', '-200%').css('visibility', 'hidden');
+					$('body').append(img);
+				}
 				COGS.graphics[s] = img[0];
 				preloaded();
 			});
@@ -338,7 +342,7 @@ COGS = {
 				ctx.translate(COGS.canvas.width / 2, COGS.canvas.height / 2);		
 				COGS.objects.forEach(function(o) {
 					var g = COGS.graphics[o.s];
-					if(!g || (!foreground && o.s === 'F') || (foreground && o.s !== 'F')) return;
+					if(!g || !g.complete || (!foreground && o.s === 'F') || (foreground && o.s !== 'F')) return;
 					
 					var hw = (g.width / 2),
 						hh = (g.height / 2);
@@ -349,7 +353,7 @@ COGS = {
 					ctx.drawImage(g, -hw, -hh);
 					ctx.restore();
 				});
-				COGS.ctx.restore();
+				ctx.restore();
 			};
 
 		COGS.canvas.width = COGS.canvas.width;
@@ -375,8 +379,9 @@ COGS = {
 		ctx.rect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = 'rgba(187, 187, 187, 0.15)';
 		ctx.fill();
-		var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-		const noiseRange = 50;
+		var data = ctx.getImageData(0, 0, canvas.width, canvas.height),
+			noiseRange = 50;
+		
 		for(var i=0; i<data.data.length; i+=4) {
 			var c = 187 + (noiseRange - (Math.floor(Math.random() * (noiseRange * 2))));
 			data.data[i] = data.data[i + 1] = data.data[i + 2] = c > 255 || c < 0 ? 187 : c;
